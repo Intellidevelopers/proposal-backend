@@ -8,34 +8,53 @@ export const getMe = async (req: AuthRequest, res: Response, next: NextFunction)
     const user = await User.findById(req.user!.id);
     if (!user) throw new ApiError("User not found.", 404);
     res.json({ success: true, user });
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const updateProfile = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { name, email } = req.body;
-    const user = await User.findByIdAndUpdate(
-      req.user!.id,
-      { name, email },
-      { new: true, runValidators: true }
-    );
+    const user = await User.findByIdAndUpdate(req.user!.id, { name, email }, { new: true, runValidators: true });
     res.json({ success: true, user });
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
+};
+
+// NEW: Check if user has an API key saved (without exposing the key itself)
+export const getApiKeyStatus = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findById(req.user!.id).select("+cohereApiKey");
+    if (!user) throw new ApiError("User not found.", 404);
+
+    const hasApiKey = !!(user.cohereApiKey && user.cohereApiKey.length > 0);
+
+    res.json({
+      success: true,
+      hasApiKey,
+      // Optionally, return first/last few characters for verification
+      keyPreview: hasApiKey ? `${user.cohereApiKey.slice(0, 4)}...${user.cohereApiKey.slice(-4)}` : null,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const updateApiKey = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { cohereApiKey } = req.body;   // updated field name
+    const { cohereApiKey } = req.body;
 
-    // Cohere trial keys start with a random string, but production keys are typically longer
-    // Basic validation: must be non-empty string if provided
     if (cohereApiKey !== undefined && typeof cohereApiKey !== "string") {
       throw new ApiError("Invalid API key format.", 400);
     }
 
     await User.findByIdAndUpdate(req.user!.id, { cohereApiKey: cohereApiKey || "" });
     res.json({ success: true, message: "Cohere API key saved." });
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const changePassword = async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -51,5 +70,7 @@ export const changePassword = async (req: AuthRequest, res: Response, next: Next
     user.password = newPassword;
     await user.save();
     res.json({ success: true, message: "Password updated." });
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 };
