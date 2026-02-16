@@ -22,7 +22,7 @@ const TONES: Record<string, string> = {
 
 export const generateProposal = async (o: GenOpts): Promise<{ text: string; score: number }> => {
   // User key takes priority over server key
-  const apiKey = o.userApiKey || ENV.COHERE_API_KEY;
+  const apiKey = o.userApiKey;
 
   if (!apiKey) {
     throw new ApiError(
