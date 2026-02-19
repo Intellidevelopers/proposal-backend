@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import { ENV } from "./config/env";
 import { generateLimiter } from "./middleware/rateLimiter";
 import { errorHandler } from "./middleware/errorHandler";
 import authRoutes from "./routes/authRoutes";
@@ -12,7 +11,25 @@ import adminRoutes from "./routes/adminRoutes";
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
+
+const allowedOrigins = new Set([
+  "https://proposal-hub-admin.vercel.app",
+  "https://proposal-pro-ashen.vercel.app",
+]);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.has(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json({ limit: "10kb" }));
 app.use("/api", generateLimiter);
 
