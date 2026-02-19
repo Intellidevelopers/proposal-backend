@@ -17,6 +17,8 @@ const allowedOrigins = new Set([
   "https://proposal-pro-ashen.vercel.app",
   "http://localhost:8081",
   "http://localhost:8080",
+  "http://localhost:5173",  // ← Vite's default, add whatever port your admin runs on
+  "http://localhost:3000",
 ]);
 
 app.use(
