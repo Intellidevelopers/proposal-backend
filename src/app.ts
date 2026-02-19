@@ -15,6 +15,8 @@ app.use(helmet());
 const allowedOrigins = new Set([
   "https://proposal-hub-admin.vercel.app",
   "https://proposal-pro-ashen.vercel.app",
+  "http://localhost:8081",
+  "http://localhost:8080",
 ]);
 
 app.use(
