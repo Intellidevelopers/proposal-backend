@@ -7,6 +7,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import authRoutes from "./routes/authRoutes";
 import proposalRoutes from "./routes/proposalRoutes";
 import userRoutes from "./routes/userRoutes";
+import adminRoutes from "./routes/adminRoutes";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/api", generateLimiter);
 app.use("/api/auth",      authRoutes);
 app.use("/api/proposals", proposalRoutes);
 app.use("/api/users",     userRoutes);
+app.use("/api/admin",     adminRoutes);
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
 

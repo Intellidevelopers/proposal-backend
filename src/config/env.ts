@@ -11,5 +11,5 @@ export const ENV = {
   JWT_SECRET:       process.env.JWT_SECRET!,
   JWT_EXPIRES_IN:   process.env.JWT_EXPIRES_IN || "7d",
   COHERE_API_KEY:   process.env.COHERE_API_KEY || "",
-  CLIENT_URL:       process.env.CLIENT_URL || "http://localhost:5173",
+  CLIENT_URL:       process.env.CLIENT_URL || "http://localhost:8080",
 };
